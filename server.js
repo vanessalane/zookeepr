@@ -1,10 +1,14 @@
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const app = express();
+
 // parse incoming string or array data
 app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
 app.use(express.json());
+// serve static files
+app.use(express.static('public'));
 
 const { animals } = require('./data/animals');
 
@@ -94,6 +98,19 @@ app.post('/api/animals', (req, res) => {
         const animal = createNewAnimal(req.body, animals);
         res.json(animal);
     }
+});
+
+app.get('/', (req, res) => {
+    const indexPath = path.join(__dirname, './public/index.html');
+    res.sendFile(indexPath);
+});
+
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
 });
 
 const PORT = process.env.PORT || 3001;
